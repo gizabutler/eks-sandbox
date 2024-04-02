@@ -1,12 +1,17 @@
-
 module "s3_bucket" {
-  source  = "terraform-aws-modules/s3-bucket/aws"
+  source = "terraform-aws-modules/s3-bucket/aws"
+  bucket = "spw-sandbox"
+  
+  control_object_ownership = true
+  object_ownership = "BucketOwnerPreferred"
+  block_public_acls = false
+  block_public_policy = false
+  restrict_public_buckets = false
+  ignore_public_acls = false
+  acl = "public-read"
 
-  bucket_name = local.cluster_name
-  acl         = "public-read"
 
-  tags = {
-    Name        = "test"
-    Environment = "test"
+  versioning = {
+    enabled = true
   }
 }
