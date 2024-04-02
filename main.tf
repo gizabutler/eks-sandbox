@@ -6,7 +6,7 @@ data "aws_availability_zones" "available" {
 }
 
 locals {
-  cluster_name = "eks-sandbox-${random_string.suffix.result}"
+  cluster_name = "spw-sandbox-${random_string.suffix.result}"
 }
 
 resource "random_string" "suffix" {
