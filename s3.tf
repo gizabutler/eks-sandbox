@@ -1,6 +1,6 @@
 module "s3_bucket" {
   source = "terraform-aws-modules/s3-bucket/aws"
-  bucket = var.cluster_name
+  bucket = "${local.app_name}-backup"
   
   control_object_ownership = true
   object_ownership = "BucketOwnerPreferred"
@@ -9,6 +9,7 @@ module "s3_bucket" {
   restrict_public_buckets = false
   ignore_public_acls = false
   acl = "public-read"
+  force_destroy = true
 
 
   versioning = {

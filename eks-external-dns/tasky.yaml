@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tasky
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: tasky.gizabutler.com
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    name: http
+    targetPort: 8080
+  selector:
+    app: tasky
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tasky
+spec:
+  selector:
+    matchLabels:
+      app: tasky
+  template:
+    metadata:
+      labels:
+        app: tasky
+    spec:
+      containers:
+      - image: ghcr.io/gizabutler/tasky:latest
+        name: tasky
+        ports:
+        - containerPort: 8080
+          name: http
+        env:
+        - name: MONGODB_URI
+          valueFrom:
+            secretKeyRef:
+              name: mongodb-uri
+              key: mongodb-uri

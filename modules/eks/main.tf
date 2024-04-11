@@ -72,3 +72,37 @@ resource "aws_eks_addon" "ebs-csi" {
     "terraform" = "true"
   }
 }
+
+module "external_dns_helm" {
+  source = "lablabs/eks-external-dns/aws"
+
+  argo_enabled      = false
+  argo_helm_enabled = false
+
+  cluster_identity_oidc_issuer     = module.eks_cluster.eks_cluster_identity_oidc_issuer
+  cluster_identity_oidc_issuer_arn = module.eks_cluster.eks_cluster_identity_oidc_issuer_arn
+
+  helm_release_name = "aws-ext-dns-helm"
+  namespace         = "aws-external-dns-helm"
+
+  values = yamlencode({
+    "LogLevel" : "debug"
+    "provider" : "aws"
+    "registry" : "txt"
+    "txtOwnerId" : "eks-cluster"
+    "txtPrefix" : "external-dns"
+    "policy" : "sync"
+    "domainFilters" : [
+      "example.com"
+    ]
+    "publishInternalServices" : "true"
+    "triggerLoopOnEvent" : "true"
+    "interval" : "5s"
+    "podLabels" : {
+      "app" : "aws-external-dns-helm"
+    }
+  })
+
+  helm_timeout = 240
+  helm_wait    = true
+}
