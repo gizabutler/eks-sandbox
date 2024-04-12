@@ -2,7 +2,7 @@
 locals {
   deployment_name = "spw-sandbox-${random_string.suffix.result}"
   app_name = "tasky"
-  ami_id = "ami-011eeb2b8989b0687"
+  ami_id = // #ami-id 
 }
 
 resource "random_string" "suffix" {
